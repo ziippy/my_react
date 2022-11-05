@@ -21,6 +21,7 @@ function Board({name}) {
   const [bet, setBet] = useState(1);
   const [meScore, setMeScore] = useState(0);
   const [otherScore, setOtherScore] = useState(0);
+  const buttonColor = name === 'kim' ? 'blue' : 'red';
 
   const handleButtonClick = (nextHand) => {
     // hand의 값을 nextHand 로 바꿔주세요
@@ -61,7 +62,7 @@ function Board({name}) {
 
   return (
     <div>
-      <Button onClick={handleClearClick}>처음부터</Button>
+      <Button color={buttonColor} onClick={handleClearClick}>처음부터</Button>
       <p>{name}</p>
       <p>{getResult(hand, otherHand)}</p>
       <p>{meScore} : {otherScore}</p>
