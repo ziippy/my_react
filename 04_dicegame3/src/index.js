@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 // import HandButton from './HandButton';
 
+// .css 파일 import 방법
+import './index.css';
+
 
 // const WINS = {
 //   rock: 'scissor',
