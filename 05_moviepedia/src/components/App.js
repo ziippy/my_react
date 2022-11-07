@@ -1,6 +1,6 @@
 import ReviewList from "./ReviewList";
 // import mockItems from "../mock.json";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getReviews } from "../api";
 
 function App() {
@@ -17,16 +17,23 @@ function App() {
         setItems(nextItems);
     };
 
-    const handleLoadClick = async () => {
-        const { reviews } = await getReviews();
+    const handleLoad = async (orderQuery) => {
+        const { reviews } = await getReviews(orderQuery);
         setItems(reviews);
     };
 
+    // handleLoad();   // 여기서 이렇게 쓰면 무한루프에 빠진다.
+    // 컴포넌트가 처음 렌더링 될 때만 request 를 보내고 싶으면 useEffect 를 사용해야 함.
+    // useEffect(() => {
+    //     handleLoad();
+    // }, []);
+    // useEffect 는 처음 handleLoad 를 부르고, 이후 dependency list 가 바뀔때만 handleLoad 를 부른다.
+    useEffect(() => {
+        handleLoad(order);
+    }, [order]);
+
     return (
         <div>
-            <div>
-                <button onClick={handleLoadClick}>불러오기</button>
-            </div>
             <div>
                 <button onClick={handleNewestClick}>최신순</button>
                 <button onClick={handleBestClick}>베스트순</button>
