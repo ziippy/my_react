@@ -11,6 +11,8 @@ function App() {
     const [order, setOrder] = useState("createdAt");
     const [offset, setOffset] = useState(0);
     const [hasNext, setHasNext] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadingError, setLoadingError] = useState(null);
 
     const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
@@ -23,7 +25,21 @@ function App() {
     };
 
     const handleLoad = async (options) => {
-        const { reviews, paging } = await getReviews(options);
+        let result;
+        try {
+            setIsLoading(true);
+            setLoadingError(null);
+            result = await getReviews(options);
+        } catch (error) {
+            // console.error(error.message);
+            setLoadingError(error);
+            // console.log(loadingError);
+            return;
+        } finally {
+            setIsLoading(false);
+        }
+
+        const { reviews, paging } = result;
         if (options.offset === 0) {
             setItems(reviews);
         } else {
@@ -57,7 +73,12 @@ function App() {
                 <button onClick={handleBestClick}>베스트순</button>
             </div>
             <ReviewList items={sortedItems} onDelete={handleDelete} />
-            {hasNext && <button onClick={handleLoadMore}>더 보기</button>}
+            {hasNext && (
+                <button disabled={isLoading} onClick={handleLoadMore}>
+                    더 보기
+                </button>
+            )}
+            {loadingError?.message && <span>{loadingError.message}</span>}
         </div>
     );
 }
