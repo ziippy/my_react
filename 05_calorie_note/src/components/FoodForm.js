@@ -1,38 +1,90 @@
 import { useState } from "react";
+import FileInput from "./FileInput";
 import "./FoodForm.css";
 
 function FoodForm() {
-    const [title, setTitle] = useState("");
-    const [calorie, setCalorie] = useState(0);
-    const [content, setContent] = useState("");
+    // const [title, setTitle] = useState("");
+    // const [calorie, setCalorie] = useState(0);
+    // const [content, setContent] = useState("");
 
-    const handleTitleChange = (e) => {
-        setTitle(e.target.value);
+    // const handleTitleChange = (e) => {
+    //     setTitle(e.target.value);
+    // };
+
+    // const handleCalorieChange = (e) => {
+    //     const nextCalorie = Number(e.target.value) || 0;
+    //     setCalorie(nextCalorie);
+    // };
+
+    // const handleContentChange = (e) => {
+    //     setContent(e.target.value);
+    // };
+
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     console.log({ title, calorie, content });
+    // };
+
+    const [values, setValues] = useState({
+        title: "",
+        calorie: 0,
+        content: "",
+        imgFile: null,
+    });
+
+    const handleValuesChange = (e) => {
+        const { name, value } = e.target;
+        handleChange(name, value);
     };
 
-    const handleCalorieChange = (e) => {
-        const nextCalorie = Number(e.target.value) || 0;
-        setCalorie(nextCalorie);
-    };
-
-    const handleContentChange = (e) => {
-        setContent(e.target.value);
+    const handleChange = (name, value) => {
+        setValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log({ title, calorie, content });
+        console.log(values);
     };
+
+    // return (
+    //     <form className="FoodForm" onSubmit={handleSubmit}>
+    //         <input value={title} onChange={handleTitleChange}></input>
+    //         <input
+    //             value={calorie}
+    //             onChange={handleCalorieChange}
+    //             type="number"
+    //         ></input>
+    //         <textarea value={content} onChange={handleContentChange}></textarea>
+    //         <button type="submit">확인</button>
+    //     </form>
+    // );
 
     return (
         <form className="FoodForm" onSubmit={handleSubmit}>
-            <input value={title} onChange={handleTitleChange}></input>
+            <FileInput
+                name="imgFile"
+                value={values.imgFile}
+                onChange={handleChange}
+            ></FileInput>
             <input
-                value={calorie}
-                onChange={handleCalorieChange}
+                name="title"
+                value={values.title}
+                onChange={handleValuesChange}
+            ></input>
+            <input
+                name="calorie"
+                value={values.calorie}
+                onChange={handleValuesChange}
                 type="number"
             ></input>
-            <textarea value={content} onChange={handleContentChange}></textarea>
+            <textarea
+                name="content"
+                value={values.content}
+                onChange={handleValuesChange}
+            ></textarea>
             <button type="submit">확인</button>
         </form>
     );
