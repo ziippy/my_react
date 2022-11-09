@@ -1,8 +1,26 @@
 import { useState } from "react";
+import { createFood } from "../api";
 import FileInput from "./FileInput";
 import "./FoodForm.css";
 
-function FoodForm() {
+function sanitize(type, value) {
+    switch (type) {
+        case "number":
+            return Number(value) || 0;
+
+        default:
+            return value;
+    }
+}
+
+const INITIAL_VALUES = {
+    title: "",
+    calorie: 0,
+    content: "",
+    imgFile: null,
+};
+
+function FoodForm({ onSubmitSuccess }) {
     // const [title, setTitle] = useState("");
     // const [calorie, setCalorie] = useState(0);
     // const [content, setContent] = useState("");
@@ -25,12 +43,9 @@ function FoodForm() {
     //     console.log({ title, calorie, content });
     // };
 
-    const [values, setValues] = useState({
-        title: "",
-        calorie: 0,
-        content: "",
-        imgFile: null,
-    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submittingError, setSubmittingError] = useState(null);
+    const [values, setValues] = useState(INITIAL_VALUES);
 
     const handleValuesChange = (e) => {
         const { name, value } = e.target;
@@ -44,9 +59,30 @@ function FoodForm() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(values);
+        // console.log(values);
+        const formData = new FormData();
+        formData.append("imgFile", values.imgFile);
+        formData.append("title", values.title);
+        formData.append("calorie", values.calorie);
+        formData.append("content", values.content);
+
+        let result;
+        try {
+            setSubmittingError(null);
+            setIsSubmitting(true);
+            result = await createFood(formData);
+        } catch (error) {
+            setSubmittingError(error);
+            return;
+        } finally {
+            setIsSubmitting(false);
+        }
+        const { food } = result;
+        // console.log(food);
+        onSubmitSuccess(food);
+        setValues(INITIAL_VALUES);
     };
 
     // return (
@@ -85,7 +121,9 @@ function FoodForm() {
                 value={values.content}
                 onChange={handleValuesChange}
             ></textarea>
-            <button type="submit">확인</button>
+            <button type="submit" disabled={isSubmitting}>
+                확인
+            </button>
         </form>
     );
 }

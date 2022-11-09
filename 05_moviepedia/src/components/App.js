@@ -57,6 +57,10 @@ function App() {
         handleLoad({ order, offset, limit: LIMIT });
     };
 
+    const handleSubmitSuccess = (review) => {
+        setItems((prevItems) => [...[review, ...prevItems]]);
+    };
+
     // handleLoad();   // 여기서 이렇게 쓰면 무한루프에 빠진다.
     // 컴포넌트가 처음 렌더링 될 때만 request 를 보내고 싶으면 useEffect 를 사용해야 함.
     // useEffect(() => {
@@ -73,7 +77,7 @@ function App() {
                 <button onClick={handleNewestClick}>최신순</button>
                 <button onClick={handleBestClick}>베스트순</button>
             </div>
-            <ReviewForm />
+            <ReviewForm onSubmitSuccess={handleSubmitSuccess} />
             <ReviewList items={sortedItems} onDelete={handleDelete} />
             {hasNext && (
                 <button disabled={isLoading} onClick={handleLoadMore}>

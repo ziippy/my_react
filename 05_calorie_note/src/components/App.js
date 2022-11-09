@@ -56,6 +56,10 @@ function App() {
         setSearch(e.target["search"].value);
     };
 
+    const handleSubmitSuccess = (food) => {
+        setItems((prevItems) => [...[food, ...prevItems]]);
+    };
+
     useEffect(() => {
         handleLoad({ order, cursor: null, limit: LIMIT, search });
     }, [order, search]);
@@ -70,7 +74,7 @@ function App() {
                 <input name="search" />
                 <button type="submit">검색</button>
             </form>
-            <FoodForm />
+            <FoodForm onSubmitSuccess={handleSubmitSuccess} />
             <FoodList items={sortedItems} onDelete={handleDelete} />
             {cursor && (
                 <button disabled={isLoading} onClick={handleLoadMore}>
