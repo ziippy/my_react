@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { createReviews } from "../api";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
 import "./ReviewForm.css";
@@ -11,13 +10,19 @@ const INITIAL_VALUES = {
     imgFile: null,
 };
 
-function ReviewForm({ onSubmitSuccess }) {
+function ReviewForm({
+    initialValues = INITIAL_VALUES,
+    initialPreview,
+    onCancel,
+    onSubmit,
+    onSubmitSuccess,
+}) {
     // const [title, setTitle] = useState("");
     // const [rating, setRating] = useState(0);
     // const [content, setContent] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittingError, setSubmittingError] = useState(null);
-    const [values, setValues] = useState(INITIAL_VALUES);
+    const [values, setValues] = useState(initialValues);
 
     // const handleTitleChange = (e) => {
     //     setTitle(e.target.value);
@@ -51,7 +56,6 @@ function ReviewForm({ onSubmitSuccess }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(values);
         //
         const formData = new FormData();
         formData.append("title", values.title);
@@ -63,7 +67,8 @@ function ReviewForm({ onSubmitSuccess }) {
         try {
             setSubmittingError(null);
             setIsSubmitting(true);
-            result = await createReviews(formData);
+            result = await onSubmit(formData);
+            console.log("result:", result);
         } catch (error) {
             setSubmittingError(error);
             return;
@@ -71,8 +76,8 @@ function ReviewForm({ onSubmitSuccess }) {
             setIsSubmitting(false);
         }
         const { review } = result;
-        onSubmitSuccess(review);
         setValues(INITIAL_VALUES);
+        onSubmitSuccess(review);
     };
 
     // return (
@@ -93,6 +98,7 @@ function ReviewForm({ onSubmitSuccess }) {
             <FileInput
                 name="imgFile"
                 value={values.imgFile}
+                initialPreview={initialPreview}
                 onChange={handleChange}
             ></FileInput>
             <input
@@ -110,6 +116,11 @@ function ReviewForm({ onSubmitSuccess }) {
                 value={values.content}
                 onChange={handleInputChange}
             ></textarea>
+            {onCancel && (
+                <button onClick={onCancel} disabled={isSubmitting}>
+                    취소
+                </button>
+            )}
             <button type="submit" disabled={isSubmitting}>
                 확인
             </button>

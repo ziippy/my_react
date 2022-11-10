@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
-function FileInput({ name, value, onChange }) {
+function FileInput({ name, value, initialPreview, onChange }) {
     // const [value, setValue] = useState();
-    const [preview, setPreview] = useState();
+    const [preview, setPreview] = useState(initialPreview);
 
     const inputRef = useRef(); // ref 를 쓰면 실제 DOM 노드를 직접 참조할 수 있다. DOM 노드는 렌더링이 끝나야 존재한다는 점에 유의해야 한다.
 
@@ -33,10 +33,10 @@ function FileInput({ name, value, onChange }) {
         // 메모리가 계속 잡히는 걸 방지하기 위한 사이드 이펙트를 제거하기 위해 revokeObjectURL 을 호출한다.
         // dependency 가 바뀌면 이 리턴 함수를 호출해서 먼저 메모리를 정리하고 createObjectURL 을 호출한다.
         return () => {
-            setPreview();
+            setPreview(initialPreview);
             URL.revokeObjectURL(nextPreview);
         };
-    }, [value]);
+    }, [value, initialPreview]);
 
     // return <input type="file" value={value} onChange={handleChange}></input>; // 이렇게 하면 오류가 발생한다. 비제어 컴포넌트를 제어하려고 했다.
     // <input type="file" onChange={handleChange} ref={inputRef}></input>; // 반드시 file 컴포넌트는 비제어 컴포넌트로 해야 한다.
