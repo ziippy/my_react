@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFood, deleteFood, getFoods, updateFood } from "../api";
+import LocaleContext from "../context/LocaleContext";
 import FoodForm from "./FoodForm";
 import FoodList from "./FoodList";
 
@@ -79,30 +80,32 @@ function App() {
     const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
     return (
-        <div>
-            <button onClick={handleNewestClick}>최신순</button>
-            <button onClick={handleCalorieClick}>칼로리순</button>
-            <form onSubmit={handleSearchSubmit}>
-                <input name="search" />
-                <button type="submit">검색</button>
-            </form>
-            <FoodForm
-                onSubmit={createFood}
-                onSubmitSuccess={handleCreateSuccess}
-            />
-            <FoodList
-                items={sortedItems}
-                onDelete={handleDelete}
-                onUpdate={updateFood}
-                onUpdateSuccess={handleUpdateSuccess}
-            />
-            {cursor && (
-                <button disabled={isLoading} onClick={handleLoadMore}>
-                    더보기
-                </button>
-            )}
-            {loadingError?.message && <span>{loadingError.message}</span>}
-        </div>
+        <LocaleContext.Provider value={"ko"}>
+            <div>
+                <button onClick={handleNewestClick}>최신순</button>
+                <button onClick={handleCalorieClick}>칼로리순</button>
+                <form onSubmit={handleSearchSubmit}>
+                    <input name="search" />
+                    <button type="submit">검색</button>
+                </form>
+                <FoodForm
+                    onSubmit={createFood}
+                    onSubmitSuccess={handleCreateSuccess}
+                />
+                <FoodList
+                    items={sortedItems}
+                    onDelete={handleDelete}
+                    onUpdate={updateFood}
+                    onUpdateSuccess={handleUpdateSuccess}
+                />
+                {cursor && (
+                    <button disabled={isLoading} onClick={handleLoadMore}>
+                        더보기
+                    </button>
+                )}
+                {loadingError?.message && <span>{loadingError.message}</span>}
+            </div>
+        </LocaleContext.Provider>
     );
 }
 

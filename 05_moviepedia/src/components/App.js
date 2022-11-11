@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createReview, deleteReview, getReviews, updateReview } from "../api";
 import ReviewForm from "./ReviewForm";
 import useAsync from "../hooks/useAsync";
+import LocaleContext from "../context/LocalContext";
 
 const LIMIT = 6;
 
@@ -100,28 +101,30 @@ function App() {
     }, [order, handleLoad]); // 여기서 handleLoad 를 지정할 때, handleLoad 에 useCallback 을 적용하지 않으면 무한루프가 발생한다.
 
     return (
-        <div>
+        <LocaleContext.Provider value={"ko"}>
             <div>
-                <button onClick={handleNewestClick}>최신순</button>
-                <button onClick={handleBestClick}>베스트순</button>
+                <div>
+                    <button onClick={handleNewestClick}>최신순</button>
+                    <button onClick={handleBestClick}>베스트순</button>
+                </div>
+                <ReviewForm
+                    onSubmit={createReview}
+                    onSubmitSuccess={handleCreateSuccess}
+                />
+                <ReviewList
+                    items={sortedItems}
+                    onDelete={handleDelete}
+                    onUpdate={updateReview}
+                    onUpdateSuccess={handleUpdateSuccess}
+                />
+                {hasNext && (
+                    <button disabled={isLoading} onClick={handleLoadMore}>
+                        더 보기
+                    </button>
+                )}
+                {loadingError?.message && <span>{loadingError.message}</span>}
             </div>
-            <ReviewForm
-                onSubmit={createReview}
-                onSubmitSuccess={handleCreateSuccess}
-            />
-            <ReviewList
-                items={sortedItems}
-                onDelete={handleDelete}
-                onUpdate={updateReview}
-                onUpdateSuccess={handleUpdateSuccess}
-            />
-            {hasNext && (
-                <button disabled={isLoading} onClick={handleLoadMore}>
-                    더 보기
-                </button>
-            )}
-            {loadingError?.message && <span>{loadingError.message}</span>}
-        </div>
+        </LocaleContext.Provider>
     );
 }
 
