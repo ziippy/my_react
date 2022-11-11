@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getFoods } from "../api";
+import { createFood, getFoods, updateFood } from "../api";
 import FoodForm from "./FoodForm";
 import FoodList from "./FoodList";
 
@@ -56,8 +56,19 @@ function App() {
         setSearch(e.target["search"].value);
     };
 
-    const handleSubmitSuccess = (food) => {
+    const handleCreateSuccess = (food) => {
         setItems((prevItems) => [...[food, ...prevItems]]);
+    };
+
+    const handleUpdateSuccess = (food) => {
+        setItems((prevItems) => {
+            const splitIdx = prevItems.findIndex((item) => item.id === food.id);
+            return [
+                ...prevItems.slice(0, splitIdx),
+                food,
+                ...prevItems.slice(splitIdx + 1),
+            ];
+        });
     };
 
     useEffect(() => {
@@ -74,8 +85,16 @@ function App() {
                 <input name="search" />
                 <button type="submit">검색</button>
             </form>
-            <FoodForm onSubmitSuccess={handleSubmitSuccess} />
-            <FoodList items={sortedItems} onDelete={handleDelete} />
+            <FoodForm
+                onSubmit={createFood}
+                onSubmitSuccess={handleCreateSuccess}
+            />
+            <FoodList
+                items={sortedItems}
+                onDelete={handleDelete}
+                onUpdate={updateFood}
+                onUpdateSuccess={handleUpdateSuccess}
+            />
             {cursor && (
                 <button disabled={isLoading} onClick={handleLoadMore}>
                     더보기

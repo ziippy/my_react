@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createReview, updateReview } from "../api";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
 import "./ReviewForm.css";
@@ -56,6 +57,7 @@ function ReviewForm({
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // console.log(values);
         //
         const formData = new FormData();
         formData.append("title", values.title);
@@ -67,8 +69,13 @@ function ReviewForm({
         try {
             setSubmittingError(null);
             setIsSubmitting(true);
-            result = await onSubmit(formData);
-            console.log("result:", result);
+            // result = await onSubmit(formData); // 이렇게 하면 updateReview 이 적용될 때 안되더라... 그래서 임시 방편으로 분리
+            if (values.id !== undefined) {
+                result = await updateReview(values.id, formData);
+            } else {
+                result = await createReview(formData);
+            }
+            // console.log("result:", result);
         } catch (error) {
             setSubmittingError(error);
             return;

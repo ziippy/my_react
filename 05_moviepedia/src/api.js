@@ -41,6 +41,6 @@ export async function updateReview(id, formData) {
     }
 
     const body = await response.json();
-    console.log("body4:", body);
+    // console.log("body4:", body);
     return body;
 }

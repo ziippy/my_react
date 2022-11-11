@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-function FileInput({ name, value, onChange }) {
-    const [preview, setPreview] = useState();
+function FileInput({ name, value, onChange, initialPreview }) {
+    const [preview, setPreview] = useState(initialPreview);
     const inputRef = useRef();
 
     const handleChange = (e) => {
@@ -28,10 +28,10 @@ function FileInput({ name, value, onChange }) {
         // 메모리가 계속 잡히는 걸 방지하기 위한 사이드 이펙트를 제거하기 위해 revokeObjectURL 을 호출한다.
         // dependency 가 바뀌면 이 리턴 함수를 호출해서 먼저 메모리를 정리하고 createObjectURL 을 호출한다.
         return () => {
-            setPreview();
+            setPreview(initialPreview);
             URL.revokeObjectURL(nextPreview);
         };
-    }, [value]);
+    }, [value, initialPreview]);
 
     return (
         <div>

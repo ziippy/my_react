@@ -44,9 +44,16 @@ function ReviewList({ items, onDelete, onUpdate, onUpdateSuccess }) {
                 // return <li>{item.title}</li>;
                 if (item.id === editingId) {
                     const { id, imgUrl, title, rating, content } = item;
-                    const initialValues = { title, rating, content };
+                    const initialValues = {
+                        id,
+                        imgUrl,
+                        title,
+                        rating,
+                        content,
+                    };
 
                     const handleSubmit = (formData) => {
+                        console.log("formData", formData);
                         onUpdate(id, formData);
                     };
                     const handleSubmitSuccess = (review) => {
@@ -64,17 +71,17 @@ function ReviewList({ items, onDelete, onUpdate, onUpdateSuccess }) {
                             />
                         </li>
                     );
+                } else {
+                    return (
+                        <li key={item.id}>
+                            <ReviewListItem
+                                item={item}
+                                onDelete={onDelete}
+                                onEdit={setEditingId}
+                            />
+                        </li>
+                    );
                 }
-
-                return (
-                    <li key={item.id}>
-                        <ReviewListItem
-                            item={item}
-                            onDelete={onDelete}
-                            onEdit={setEditingId}
-                        />
-                    </li>
-                );
             })}
         </ul>
     );

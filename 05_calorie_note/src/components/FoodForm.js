@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { createFood } from "../api";
+import { createFood, updateFood } from "../api";
 import FileInput from "./FileInput";
 import "./FoodForm.css";
 
-function sanitize(type, value) {
-    switch (type) {
-        case "number":
-            return Number(value) || 0;
+// function sanitize(type, value) {
+//     switch (type) {
+//         case "number":
+//             return Number(value) || 0;
 
-        default:
-            return value;
-    }
-}
+//         default:
+//             return value;
+//     }
+// }
 
 const INITIAL_VALUES = {
     title: "",
@@ -20,7 +20,13 @@ const INITIAL_VALUES = {
     imgFile: null,
 };
 
-function FoodForm({ onSubmitSuccess }) {
+function FoodForm({
+    initialValues = INITIAL_VALUES,
+    initialPreview,
+    onCancel,
+    onSubmit,
+    onSubmitSuccess,
+}) {
     // const [title, setTitle] = useState("");
     // const [calorie, setCalorie] = useState(0);
     // const [content, setContent] = useState("");
@@ -45,7 +51,7 @@ function FoodForm({ onSubmitSuccess }) {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittingError, setSubmittingError] = useState(null);
-    const [values, setValues] = useState(INITIAL_VALUES);
+    const [values, setValues] = useState(initialValues);
 
     const handleValuesChange = (e) => {
         const { name, value } = e.target;
@@ -72,7 +78,12 @@ function FoodForm({ onSubmitSuccess }) {
         try {
             setSubmittingError(null);
             setIsSubmitting(true);
-            result = await createFood(formData);
+            // result = await onSubmit(formData); // 이상하게 안되네...
+            if (values.id !== undefined) {
+                result = await updateFood(values.id, formData);
+            } else {
+                result = await createFood(formData);
+            }
         } catch (error) {
             setSubmittingError(error);
             return;
@@ -103,6 +114,7 @@ function FoodForm({ onSubmitSuccess }) {
             <FileInput
                 name="imgFile"
                 value={values.imgFile}
+                initialPreview={initialPreview}
                 onChange={handleChange}
             ></FileInput>
             <input
@@ -121,9 +133,15 @@ function FoodForm({ onSubmitSuccess }) {
                 value={values.content}
                 onChange={handleValuesChange}
             ></textarea>
+            {onCancel && (
+                <button onClick={onCancel} disabled={isSubmitting}>
+                    취소
+                </button>
+            )}
             <button type="submit" disabled={isSubmitting}>
                 확인
             </button>
+            {submittingError?.message && <div>{submittingError.message}</div>}
         </form>
     );
 }
