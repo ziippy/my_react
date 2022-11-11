@@ -9,7 +9,7 @@ export async function getReviews({
 
     // https://learn.codeit.kr/api/film-reviews 에서 api 대신 전화번호 뒷자리 사용을 권장
     const query = `order=${order}&offset=${offset}&limit=${limit}`;
-    const response = await fetch(`${BASE_URL}/film-reviews?${query}`);
+    const response = await fetch(`${BASE_URL}/film-reviews?${query}`, {});
     if (!response.ok) {
         throw new Error("조회 실패!");
     }

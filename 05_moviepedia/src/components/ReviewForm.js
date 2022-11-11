@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { createReview, updateReview } from "../api";
+// import { createReview, updateReview } from "../api";
+import useAsync from "../hooks/useAsync";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
 import "./ReviewForm.css";
@@ -21,9 +22,11 @@ function ReviewForm({
     // const [title, setTitle] = useState("");
     // const [rating, setRating] = useState(0);
     // const [content, setContent] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submittingError, setSubmittingError] = useState(null);
     const [values, setValues] = useState(initialValues);
+    // 아래 부분을 Custom Hook 으로 변경
+    // const [isSubmitting, setIsSubmitting] = useState(false);
+    // const [submittingError, setSubmittingError] = useState(null);
+    const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
 
     // const handleTitleChange = (e) => {
     //     setTitle(e.target.value);
@@ -65,23 +68,27 @@ function ReviewForm({
         formData.append("content", values.content);
         formData.append("imgFile", values.imgFile);
 
-        let result;
-        try {
-            setSubmittingError(null);
-            setIsSubmitting(true);
-            // result = await onSubmit(formData); // 이렇게 하면 updateReview 이 적용될 때 안되더라... 그래서 임시 방편으로 분리
-            if (values.id !== undefined) {
-                result = await updateReview(values.id, formData);
-            } else {
-                result = await createReview(formData);
-            }
-            // console.log("result:", result);
-        } catch (error) {
-            setSubmittingError(error);
-            return;
-        } finally {
-            setIsSubmitting(false);
-        }
+        // let result;
+        // try {
+        //     setSubmittingError(null);
+        //     setIsSubmitting(true);
+        //     // result = await onSubmit(formData); // 이렇게 하면 updateReview 이 적용될 때 안되더라... 그래서 임시 방편으로 분리
+        //     if (values.id !== undefined) {
+        //         result = await updateReview(values.id, formData);
+        //     } else {
+        //         result = await createReview(formData);
+        //     }
+        //     // console.log("result:", result);
+        // } catch (error) {
+        //     setSubmittingError(error);
+        //     return;
+        // } finally {
+        //     setIsSubmitting(false);
+        // }
+        // Custom Hook 으로 변경
+        const result = await onSubmitAsync(formData);
+        if (!result) return;
+
         const { review } = result;
         setValues(INITIAL_VALUES);
         onSubmitSuccess(review);
