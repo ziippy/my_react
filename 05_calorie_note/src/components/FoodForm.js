@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createFood, updateFood } from "../api";
+import useTranslate from "../hooks/useTranslate";
 import FileInput from "./FileInput";
 import "./FoodForm.css";
 
@@ -48,6 +49,8 @@ function FoodForm({
     //     e.preventDefault();
     //     console.log({ title, calorie, content });
     // };
+
+    const t = useTranslate();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submittingError, setSubmittingError] = useState(null);
@@ -135,11 +138,11 @@ function FoodForm({
             ></textarea>
             {onCancel && (
                 <button onClick={onCancel} disabled={isSubmitting}>
-                    취소
+                    {t("cancel button")}
                 </button>
             )}
             <button type="submit" disabled={isSubmitting}>
-                확인
+                {t("confirm button")}
             </button>
             {submittingError?.message && <div>{submittingError.message}</div>}
         </form>

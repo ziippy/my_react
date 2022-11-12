@@ -1,6 +1,7 @@
 import { useState } from "react";
 // import { createReview, updateReview } from "../api";
 import useAsync from "../hooks/useAsync";
+import useTranslate from "../hooks/useTranslate";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
 import "./ReviewForm.css";
@@ -19,6 +20,7 @@ function ReviewForm({
     onSubmit,
     onSubmitSuccess,
 }) {
+    const t = useTranslate();
     // const [title, setTitle] = useState("");
     // const [rating, setRating] = useState(0);
     // const [content, setContent] = useState("");
@@ -132,11 +134,11 @@ function ReviewForm({
             ></textarea>
             {onCancel && (
                 <button onClick={onCancel} disabled={isSubmitting}>
-                    취소
+                    {t("cancel button")}
                 </button>
             )}
             <button type="submit" disabled={isSubmitting}>
-                확인
+                {t("confirm button")}
             </button>
             {submittingError?.message && <div>{submittingError.message}</div>}
         </form>

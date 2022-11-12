@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { createFood, deleteFood, getFoods, updateFood } from "../api";
-import LocaleContext from "../context/LocaleContext";
+import { LocaleProvider } from "../context/LocaleContext";
 import FoodForm from "./FoodForm";
 import FoodList from "./FoodList";
+import LocaleSelect from "./LocaleSelect";
 
 const LIMIT = 10;
 
@@ -80,8 +81,9 @@ function App() {
     const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
     return (
-        <LocaleContext.Provider value={"ko"}>
+        <LocaleProvider defaultValue="ko">
             <div>
+                <LocaleSelect />
                 <button onClick={handleNewestClick}>최신순</button>
                 <button onClick={handleCalorieClick}>칼로리순</button>
                 <form onSubmit={handleSearchSubmit}>
@@ -105,7 +107,7 @@ function App() {
                 )}
                 {loadingError?.message && <span>{loadingError.message}</span>}
             </div>
-        </LocaleContext.Provider>
+        </LocaleProvider>
     );
 }
 
