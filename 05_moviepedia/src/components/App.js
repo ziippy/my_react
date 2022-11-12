@@ -5,10 +5,12 @@ import { createReview, deleteReview, getReviews, updateReview } from "../api";
 import ReviewForm from "./ReviewForm";
 import useAsync from "../hooks/useAsync";
 import LocaleContext from "../context/LocalContext";
+import LocaleSelect from "./LocaleSelect";
 
 const LIMIT = 6;
 
 function App() {
+    const [locale, setLocale] = useState("ko");
     // const [items, setItems] = useState(mockItems);
     const [items, setItems] = useState([]);
     const [order, setOrder] = useState("createdAt");
@@ -101,8 +103,9 @@ function App() {
     }, [order, handleLoad]); // 여기서 handleLoad 를 지정할 때, handleLoad 에 useCallback 을 적용하지 않으면 무한루프가 발생한다.
 
     return (
-        <LocaleContext.Provider value={"ko"}>
+        <LocaleContext.Provider value={locale}>
             <div>
+                <LocaleSelect value={locale} onChange={setLocale} />
                 <div>
                     <button onClick={handleNewestClick}>최신순</button>
                     <button onClick={handleBestClick}>베스트순</button>
